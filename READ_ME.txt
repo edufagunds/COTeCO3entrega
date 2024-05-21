@@ -2,6 +2,10 @@ Sprint 4
 
 COTeCO
 
+criamos o usuario adm@adm.com.br com a senha 123456.
+
+para os demais logins, o usuario deve realizar o cadastro.
+
 Phone utilizado para testes com 165.3 x 76.8 x 9.4 mm de tela.
 
 App carregado no EXPO.
