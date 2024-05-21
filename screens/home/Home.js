@@ -1,10 +1,25 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Login from '../login/Login';
+import { StyleSheet, Text, View, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 const imageSize = '30%';
 
 const Home = () => {
+  const navigation = useNavigation();
+
+  const irparaLogin = () => {
+    navigation.navigate('login');
+  };
+  const irparaCadastro = () => {
+    navigation.navigate('cadastro');
+  };
+
+  const irparaConhecer = () => {
+    navigation.navigate('ConhecaNos')
+  };
+
   console.log('Executanto Home')
   return (
     <View style={styles.container}>
@@ -13,15 +28,22 @@ const Home = () => {
           source={require('../../images/coteco_logo.png')}
           style={styles.imagem}
         />
-        <View style={[styles.containerPadrao, {width: width * 0.5}]}>
-          <Text style={styles.textoEnviar}>SOU CLIENTE</Text>
-        </View>
-        <View style={[styles.containerPadrao, {backgroundColor: '#333333', marginBottom: height * 0.04}]}>
-          <Text style={styles.textoEnviar}>QUERO SER CLIENTE</Text>
-        </View>
-        <View style={[styles.containerConhecer, {marginTop: height * 0.17}]}>
+        <TouchableOpacity onPress={irparaLogin}>
+          <View style={[styles.containerPadrao, {width: width * 0.5}]}>
+            <Text style={styles.textoEnviar}>SOU CLIENTE</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={irparaCadastro}>
+          <View style={[styles.containerPadrao, {backgroundColor: '#333333', marginBottom: height * 0.04}]}>
+            <Text style={styles.textoEnviar}>QUERO SER CLIENTE</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={irparaConhecer}>
+        <View style={[styles.containerConhecer, {marginTop: height * 0.18}]}>
           <Text style={styles.textoPadrao}>CONHECA-NOS</Text>
         </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

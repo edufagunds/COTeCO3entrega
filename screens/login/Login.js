@@ -1,26 +1,41 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, TextInput, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../services/firebaseConfig';
 
 const { width, height } = Dimensions.get('window');
 const imageSize = '30%';
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
-  const [Senha, setSenha] = useState('');
+  const [senha, setSenha] = useState('');
+  const [error, setError] = useState('');
+
+  const navigation = useNavigation();
+
+  const irparaCadastro = () => {
+    navigation.navigate('cadastro');
+  };
+
+  const handleAlerta = () => {
+    Alert.alert("Aviso", "Contate um dos Desenvolvedores na pagina inicial > Conheca-nos");
+  };
 
   const handleLogin = async () => {
-
-    const dadosUsuario = { email, Senha };
     try {
-
-      await AsyncStorage.setItem('dadosUsuario', JSON.stringify(dadosUsuario));
+      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      const user = userCredential.user;
+      console.log(user);
+      setUser(user);
+      setError('');
     } catch (error) {
-      console.error('Erro ao salvar dados de login:', error);
+      setError("E-mail ou senha incorretos, por favor tente novamente");
+      console.log(error.message);
     }
   };
 
-  console.log('Executanto Login');
+  console.log('Executando Login');
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -38,22 +53,29 @@ const Login = () => {
             value={email}
             onChangeText={setEmail}
           />
-
           <Text style={[styles.textoPadrao, { marginTop: height * (-0.02) }]}>SENHA: </Text>
           <TextInput
             style={styles.inputPadrao}
-            value={Senha}
+            value={senha}
             onChangeText={setSenha}
             secureTextEntry={true}
+            keyboardType='numeric'
           />
         </View>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <TouchableOpacity style={styles.containerEnviar} onPress={handleLogin}>
           <Text style={styles.textoEnviar}>ENTRAR</Text>
         </TouchableOpacity>
-        <Text style={styles.textoLink}>ESQUECI MINHA SENHA</Text>
+        <Text 
+          onPress={handleAlerta}
+          style={styles.textoLink}>
+          ESQUECI MINHA SENHA
+          </Text>
+        <TouchableOpacity onPress={irparaCadastro}>
         <View style={styles.containerSerCliente}>
           <Text style={styles.textoPadrao}>QUERO SER CLIENTE</Text>
         </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -73,7 +95,7 @@ const styles = StyleSheet.create({
   imagem: {
     maxWidth: '53%',
     maxHeight: '40%',
-    marginBottom: height * 0.01,
+    marginTop: height * 0.07,
   },
   textoTitulo: {
     fontSize: width * 0.06,
@@ -97,7 +119,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 10,
     borderRadius: 5,
-    marginBottom: height * 0.05,
+    marginBottom: height * 0.02,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: width * 0.04,
+    marginBottom: height * 0.02,
+    textAlign: 'center',
   },
   containerEnviar: {
     width: width * 0.6,
@@ -131,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D9D9D9',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: height * 0.12,
+    marginTop: height * 0.1,
   },
 });
 
